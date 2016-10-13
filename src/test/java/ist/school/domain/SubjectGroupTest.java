@@ -38,7 +38,7 @@ public class SubjectGroupTest {
     }
 
     @Test
-    public void shouldRemoveSubjectsWhichMatchWithSujectsOfGivenGroup(){
+    public void shouldRemoveCommonSubjectsFromSubjectListWhichMatchWithSujectsOfGroup() {
         SubjectGroup commonGroup = new SubjectGroup(300L, "Common");
 
         final Subject maths = new Subject(400L, "Maths");

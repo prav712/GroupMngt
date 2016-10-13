@@ -34,6 +34,13 @@ public class SubjectGroup extends PersistentEntity {
         return this.getStudentList().size() >= SchoolConstants.MAX_LIMIT;
     }
 
+    /**
+     * @return <tt>true</tt> if subjectGroup has reached minimum number of students
+     */
+    public boolean isMinLimitReached() {
+        return this.getStudentList().size() >= SchoolConstants.MIN_LIMIT;
+    }
+
 
     /**
      * Removes from given list all of its elements that are contained in the

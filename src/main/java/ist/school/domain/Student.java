@@ -24,7 +24,6 @@ public class Student extends PersistentEntity {
         this.isPlaced = false;
     }
 
-
     public boolean isPlaced() {
         return isPlaced;
     }

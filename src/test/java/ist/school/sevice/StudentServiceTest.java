@@ -23,22 +23,23 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StudentServiceTest {
+    private static final long STUDENT_ID_100 = 100L;
+
     private StudentService studentService;
 
     @Mock
     StudentRepository studentRepository;
 
 
-
     @Before
-    public void setUp(){
+    public void setUp() {
         studentService = new StudentService(studentRepository);
     }
 
     @Test
-    public void shouldReturnNumberOfUnplacedStudentsAreTwo(){
-        final Student student1 = new Student(100L, "Praveen");
-        final Student student2 = new Student(101L, "Harald");
+    public void shouldReturnTwoAsNumberOfUnplacedStudens() {
+        Student student1 = new Student(STUDENT_ID_100, "Praveen");
+        Student student2 = new Student(101L, "Harald");
 
         student1.setPlaced(true);
         student2.setPlaced(true);
@@ -51,5 +52,16 @@ public class StudentServiceTest {
         final List<Student> allUnplacedStudents = studentService.getAllUnplacedStudents();
 
         assertThat(allUnplacedStudents, hasSize(2));
+    }
+
+    @Test
+    public void shouldReturnStudentOfGivenId() {
+        Student student1 = new Student(STUDENT_ID_100, "Praveen");
+
+        student1.setPlaced(true);
+
+        when(studentRepository.getStudent(STUDENT_ID_100)).thenReturn(student1);
+
+        assertThat(studentService.findStudentByStudentId(STUDENT_ID_100), is(student1));
     }
 }

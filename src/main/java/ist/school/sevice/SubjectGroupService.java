@@ -3,27 +3,52 @@ package ist.school.sevice;
 import ist.school.domain.Student;
 import ist.school.domain.Subject;
 import ist.school.domain.SubjectGroup;
+import ist.school.repository.SubjectGroupRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * Created by Praveen Gupta on 12/10/16.
  */
 public class SubjectGroupService {
+    private SubjectGroupRepository subjectGroupRepository;
+    private StudentService studentService;
+
+    public SubjectGroupService(StudentService studentService, SubjectGroupRepository subjectGroupRepository) {
+        this.studentService = studentService;
+        this.subjectGroupRepository = subjectGroupRepository;
+    }
 
     /**
-     *
-     * @param studentToBeAdded
+     * @return list of subject groups which has min capacity of students are not reached
      */
-    public void addStudentToSubjectGroup(Student studentToBeAdded){
+    public List<SubjectGroup> fetchAllSubjectGroupsWhichHasMinCapacityNotReached(){
+        return subjectGroupRepository.getAllSubjectGroups()
+                .stream()
+                .filter(SubjectGroup::isMinLimitReached)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Adds students to the corresponding subject groups if max capacity of subjects groups are not reached.
+     * If a student with maths and french subjects has been assigned to a maths subject group but max capacity of
+     * french group are already reached then student will not be assigned to any subject groups and remained unplaced.
+     * @param studentId id of student to be added
+     */
+    public void addStudentToSubjectGroup(Long studentId){
+        Student studentToBeAdded = studentService.findStudentByStudentId(studentId);
+
         if(!studentToBeAdded.isPlaced()) {
-           // Assuming that student has already been assigned to a Class
             validateAndPlaceStudent(studentToBeAdded);
         }
     }
 
     private void validateAndPlaceStudent(Student studentToBeAdded) {
+        // Assuming that student has already been assigned to a Class and Class has list of
+        // corresponding subject groups.
         final List<SubjectGroup> subjectGroupList = studentToBeAdded.getStudyClass().getSubjectGroupList();
         List<SubjectGroup> subjectGroupsBelongToStudent = new ArrayList<>();
         List<Subject> subjectsToBeMatched = new ArrayList<>(studentToBeAdded.getSubjectList());
@@ -36,6 +61,8 @@ public class SubjectGroupService {
                     subjectsToBeMatched = unMatchedSubjects;
                 }
                 if (unMatchedSubjects.size() == 0){
+                    //a student will only be placed if he has been assigned to all corresponding
+                    //subject groups
                     studentToBeAdded.setPlaced(true);
                     break;
                 }
@@ -56,6 +83,4 @@ public class SubjectGroupService {
             });
         }
     }
-
-    //min
 }

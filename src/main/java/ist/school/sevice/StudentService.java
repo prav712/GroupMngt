@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
  * Created by Praveen Gupta on 13/10/16.
  */
 public class StudentService {
-    StudentRepository studentRepository;
+    private StudentRepository studentRepository;
 
     public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
@@ -23,5 +23,14 @@ public class StudentService {
         return studentRepository.getAllStudents().stream()
                 .filter(Student::isPlaced)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * finds student of given id
+     * @param id id of student
+     * @return student of given id
+     */
+    public Student findStudentByStudentId(long id){
+        return studentRepository.getStudent(id);
     }
 }
